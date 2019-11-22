@@ -39,6 +39,10 @@ const Row = styled.div`
   align-items: center;
 `;
 
+const TimerWrapper = styled(Row)`
+  padding-right: 12px;
+`;
+
 const Timer = () => {
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
@@ -56,14 +60,14 @@ const Timer = () => {
   }, [isActive, seconds]);
 
   return (
-    <Row>
+    <TimerWrapper>
       <TotalTime seconds={seconds} />
       <Row>
         <Button isActive={isActive} onClick={() => setIsActive(!isActive)}>
           <FontAwesomeIcon icon={(isActive && faStopCircle) || faPlayCircle} />
         </Button>
       </Row>
-    </Row>
+    </TimerWrapper>
   );
 };
 
