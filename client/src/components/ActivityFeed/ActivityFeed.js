@@ -20,8 +20,11 @@ const ActivityFeed = () => {
   if (error) return <div>Error :(</div>;
 
   return data.sessions.map(({ start, end, project, activity }, index) => (
-    <div key={index}>
-      <p>{`${start} ${end} ${project} ${activity}`}</p>
+    <div>
+      <h1>Activity</h1>
+      <div key={index}>
+        <p>{`${start} ${end} ${project} ${activity}`}</p>
+      </div>
     </div>
   ));
 };
