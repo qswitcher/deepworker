@@ -1,5 +1,8 @@
 const { ApolloServer } = require("apollo-server");
 const schema = require("./schema");
+const connectDb = require("./mongoose");
+
+require("dotenv").config();
 
 const server = new ApolloServer({
   ...schema,
@@ -7,6 +10,8 @@ const server = new ApolloServer({
   playground: true // enables the actual playground
 });
 
-server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
-  console.log(`🚀 Server ready at ${url}`);
+connectDb().then(() => {
+  server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
+    console.log(`🚀 Server ready at ${url}`);
+  });
 });

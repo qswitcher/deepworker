@@ -17,8 +17,11 @@
     "nodemon": "^2.0.1"
   },
   "dependencies": {
+    "apollo-datasource-mongodb": "^0.2.0",
     "apollo-server": "^2.9.12",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "graphql": "^14.5.8"
+    "graphql": "^14.5.8",
+    "mongoose": "^5.7.12"
   }
 }

@@ -1,5 +1,3 @@
-const { gql } = require("apollo-server");
-
 const sessions = [
   {
     start: new Date(Date.UTC(2019, 2, 11, 3, 4, 0)).toISOString(),
@@ -24,31 +22,21 @@ const sessions = [
     end: new Date(Date.UTC(2019, 4, 11, 3, 54, 10)).toISOString(),
     project: "Deepwork",
     activity: "Coding"
+  },
+  {
+    start: new Date(Date.UTC(2019, 4, 13, 3, 4, 0)).toISOString(),
+    end: new Date(Date.UTC(2019, 4, 13, 3, 54, 10)).toISOString(),
+    project: "Algorithms",
+    activity: "Coding"
   }
 ];
 
-// The GraphQL schema in string form
-const typeDefs = gql`
-  type Query {
-    sessions: [Session]
+const sessionsResolvers = {
+  Query: {
+    async sessions() {
+      return sessions;
+    }
   }
-  type Session {
-    start: String
-    end: String
-    project: String
-    activity: String
-    notes: String
-  }
-`;
-
-// The resolvers
-const resolvers = {
-  Query: { sessions: () => sessions }
 };
 
-const schema = {
-  typeDefs,
-  resolvers
-};
-
-module.exports = schema;
+module.exports = sessionsResolvers;
