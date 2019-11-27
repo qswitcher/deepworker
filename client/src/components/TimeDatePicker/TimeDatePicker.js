@@ -1,114 +1,96 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
-import { faStopCircle } from "@fortawesome/free-solid-svg-icons";
+import { faLongArrowAltRight } from "@fortawesome/free-solid-svg-icons";
 import TotalTime from "../TotalTime/TotalTime";
 import "react-dates/initialize"; // weird initialization for AirBnB's datepicker
 import "react-dates/lib/css/_datepicker.css";
 import { SingleDatePicker } from "react-dates";
 
-const TimeDatePicker = () => null;
-// const IconWrapper = styled.div`
-
-// `;
-// height: 100%;
-// border: none;
-// &:focus {
-//   outline: none;
-// }
-const Button = styled.button`
-  padding: 0;
-  border-radius: 21px;
-  border-color: transparent;
-  border-width: 3px;
-  border-style: solid;
-
+const StarTimeInput = styled.input`
+  padding: 10px 12px;
+  outline: none;
+  border: 1px solid #f3f3f3;
+  border-radius: 8px;
+  transition: color 0.5s;
+  background-color: initial;
+  box-shadow: none;
+  font-size: inherit;
+  font-color: #222;
+  font-family: "Lato", sans-serif;
+  width: 128px;
+  height: 36px;
+  line-height: 36px;
   &:focus {
-    border-color: rgba(177, 177, 177, 0.27);
     outline: none;
-  }
-  svg {
-    font-size: 36px;
-  }
-  path {
-    fill: ${props => (props.isActive ? "#e20505" : "rgb(75, 200, 0)")};
   }
 `;
 
-const Row = styled.div`
+const StartTime = styled.div`
+  height: 36px;
+  line-height: 36px;
+  width: 128px;
+  position: relative;
+`;
+
+const EndTime = styled.input`
+  width: 85px;
+  height: 36px;
+  padding: 10px 12px;
+  outline: none;
+  border: 1px solid #f3f3f3;
+  border-radius: 8px;
+  transition: color 0.5s;
+  background-color: initial;
+  box-shadow: none;
+  font-size: inherit;
+  font-color: #222;
+  font-family: "Lato", sans-serif;
+  line-height: 36px;
+  &:focus {
+    outline: none;
+  }
+`;
+
+const StartDate = styled.span`
+  position: absolute;
+  right: 12px;
+  height: 36px;
+  color: #a3a3a3;
+  line-height: 36px;
+`;
+
+const Container = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  vertical-align: initial;
 `;
 
-const TimerWrapper = styled(Row)`
-  padding-right: 12px;
+const ArrowContainer = styled.div`
+  padding: 0 16px;
+  path {
+    fill: #cecece;
+  }
 `;
-
-const Timer = () => {
+const TimeDatePicker = () => {
   const [seconds, setSeconds] = useState(0);
   const [date, setDate] = useState(null);
   const [datepickerFocus, setDatePickerFocus] = useState(false);
   const [isActive, setIsActive] = useState(false);
 
-  useEffect(() => {
-    let interval = null;
-    if (isActive) {
-      interval = setInterval(() => {
-        setSeconds(seconds => seconds + 1);
-      }, 1000);
-    } else if (!isActive && seconds !== 0) {
-      clearInterval(interval);
-    }
-    return () => clearInterval(interval);
-  }, [isActive, seconds]);
-
   return (
-    <TimerWrapper>
-      <SingleDatePicker
-        date={date}
-        onDateChange={d => setDate(d)}
-        focused={datepickerFocus}
-        onFocusChange={({ focused }) => setDatePickerFocus(focused)}
-        id="datepicker"
-      />
-      <TotalTime seconds={seconds} />
-      <Row>
-        <Button isActive={isActive} onClick={() => setIsActive(!isActive)}>
-          <FontAwesomeIcon icon={(isActive && faStopCircle) || faPlayCircle} />
-        </Button>
-      </Row>
-    </TimerWrapper>
+    <Container>
+      <StartTime>
+        <StarTimeInput value="12:57 PM" />
+        <StartDate>Today</StartDate>
+      </StartTime>
+      <ArrowContainer>
+        <FontAwesomeIcon icon={faLongArrowAltRight} />
+      </ArrowContainer>
+      <EndTime value="12:57 PM" />
+    </Container>
   );
 };
 
-const Input = styled.input`
-  height: 66px;
-  font-size: 18px;
-  padding: 12px;
-  width: 100%;
-  border: none;
-  &:focus {
-    outline: none;
-  }
-`;
-
-const Wrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  box-shadow: rgba(0, 0, 0, 0.13) 0px 2px 6px 0px;
-`;
-
-const Composer = () => {
-  return (
-    <Wrapper>
-      <Input placeholder="What are you working on?" />
-      <TimeDatePicker />
-      <Timer />
-    </Wrapper>
-  );
-};
-
-export default Composer;
+export default TimeDatePicker;

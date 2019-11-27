@@ -4,12 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 import { faStopCircle } from "@fortawesome/free-solid-svg-icons";
 import TotalTime from "../TotalTime/TotalTime";
-import "react-dates/initialize"; // weird initialization for AirBnB's datepicker
-import "react-dates/lib/css/_datepicker.css";
-import { SingleDatePicker } from "react-dates";
-
-const TimeDatePicker = () => null;
-// const IconWrapper = styled.div`
+import TimeDatePicker from "../TimeDatePicker/TimeDatePicker";
 
 // `;
 // height: 100%;
@@ -66,13 +61,6 @@ const Timer = () => {
 
   return (
     <TimerWrapper>
-      <SingleDatePicker
-        date={date}
-        onDateChange={d => setDate(d)}
-        focused={datepickerFocus}
-        onFocusChange={({ focused }) => setDatePickerFocus(focused)}
-        id="datepicker"
-      />
       <TotalTime seconds={seconds} />
       <Row>
         <Button isActive={isActive} onClick={() => setIsActive(!isActive)}>
