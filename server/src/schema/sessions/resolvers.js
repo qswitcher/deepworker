@@ -1,5 +1,11 @@
 const sessions = [
   {
+    start: new Date(Date.UTC(2019, 1, 3, 3, 4, 0)).toISOString(),
+    end: new Date(Date.UTC(2019, 1, 3, 4, 32, 0)).toISOString(),
+    project: "Deepwork",
+    activity: "Coding"
+  },
+  {
     start: new Date(Date.UTC(2019, 2, 11, 3, 4, 0)).toISOString(),
     end: new Date(Date.UTC(2019, 2, 11, 3, 54, 5)).toISOString(),
     project: "Deepwork",

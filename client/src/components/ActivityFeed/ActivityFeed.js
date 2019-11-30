@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import styled from "styled-components";
+import moment from "moment";
 
 const RECENT_SESSIONS = gql`
   {
@@ -66,6 +67,23 @@ const ActivityFeedContainer = styled.div`
   padding: 30px 0;
 `;
 
+const formatTime = value => {
+  return new Date(value).toLocaleTimeString("en-US", {
+    timeStyle: "short"
+  });
+};
+
+const hourDiff = (a, b) => {
+  const totalSeconds = (new Date(a).getTime() - new Date(b).getTime()) / 1000;
+  const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+  const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(
+    2,
+    "0"
+  );
+  const seconds = String(totalSeconds % 60).padStart(2, "0");
+  return `${hours}:${minutes}:${seconds}`;
+};
+
 const ActivityFeed = () => {
   const { loading, error, data } = useQuery(RECENT_SESSIONS);
 
@@ -98,8 +116,10 @@ const ActivityFeed = () => {
                 <Session key={index}>
                   <FlexItem>{session.project}</FlexItem>
                   <SessionActivity>{session.activity}</SessionActivity>
-                  <FlexItem>{session.start}</FlexItem>
-                  <FlexItem>0</FlexItem>
+                  <FlexItem>{`${formatTime(session.start)} - ${formatTime(
+                    session.end
+                  )}`}</FlexItem>
+                  <FlexItem>{hourDiff(session.end, session.start)}</FlexItem>
                 </Session>
               );
             })}
