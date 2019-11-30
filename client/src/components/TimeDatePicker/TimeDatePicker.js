@@ -1,9 +1,31 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLongArrowAltRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLongArrowAltRight,
+  faCheckCircle
+} from "@fortawesome/free-solid-svg-icons";
 import { DayPickerSingleDateController } from "react-dates";
 import moment from "moment";
+
+const Button = styled.button`
+  padding: 0 12px 0 18px;
+  border-radius: 21px;
+  border-color: transparent;
+  border-width: 3px;
+  border-style: solid;
+
+  &:focus {
+    border-color: rgba(177, 177, 177, 0.27);
+    outline: none;
+  }
+  svg {
+    font-size: 36px;
+  }
+  path {
+    fill: rgb(75, 200, 0);
+  }
+`;
 
 const StarTimeInput = styled.input`
   padding: 10px 12px;
@@ -157,6 +179,9 @@ const TimeDatePicker = () => {
         }}
         value={endTime}
       />
+      <Button>
+        <FontAwesomeIcon icon={faCheckCircle} />
+      </Button>
     </Container>
   );
 };

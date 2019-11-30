@@ -94,7 +94,7 @@ const Composer = () => {
     <Wrapper>
       <Input placeholder="What are you working on?" />
       <TimeDatePicker />
-      <Timer />
+      {/* <Timer /> */}
     </Wrapper>
   );
 };

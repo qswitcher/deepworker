@@ -1,3 +1,5 @@
+const Sessions = require("./sessions");
+
 const sessions = [
   {
     start: new Date(Date.UTC(2019, 1, 3, 3, 4, 0)).toISOString(),
@@ -52,6 +54,12 @@ const sessions = [
 const sessionsResolvers = {
   Query: {
     async sessions() {
+      try {
+        return sessions;
+        // return await Sessions.find();
+      } catch (e) {
+        console.log("e", e);
+      }
       return sessions;
     }
   }
