@@ -9,7 +9,8 @@ import { DayPickerSingleDateController } from "react-dates";
 import moment from "moment";
 
 const Button = styled.button`
-  padding: 0 12px 0 18px;
+  margin: 0 12px 0 18px;
+  padding: 0;
   border-radius: 21px;
   border-color: transparent;
   border-width: 3px;
@@ -102,13 +103,32 @@ const KEY_TAB = 9;
 const parseTime = value => moment(value, "h:mm A");
 const formatTime = (m = moment()) => m.format("h:mm A");
 
-const TimeDatePicker = () => {
-  const [date, setDate] = useState(null);
+const copyTime = (d, time) => {
+  const { years, months, date } = d.toObject();
+  const { hours, minutes, seconds } = time.toObject();
+  return moment({
+    years,
+    months,
+    date,
+    hours,
+    minutes,
+    seconds
+  });
+};
+
+const TimeDatePicker = ({ onTimesChange }) => {
+  const [startDate, setStartDate] = useState(moment());
   const [focused, setFocused] = useState(false);
   const [startTime, setStartTime] = useState(formatTime());
   const [endTime, setEndTime] = useState(formatTime());
 
   let startTimeRef = React.createRef();
+
+  const setTime = setter => e => {
+    const parsed = parseTime(e.target.value);
+    setter(formatTime((parsed.isValid() && parsed) || moment()));
+  };
+
   return (
     <Container>
       <StartTime
@@ -120,38 +140,30 @@ const TimeDatePicker = () => {
       >
         <StarTimeInput
           onChange={e => setStartTime(e.target.value)}
-          onBlur={e => {
-            const parsed = parseTime(e.target.value);
-            setStartTime(formatTime((parsed.isValid() && parsed) || moment()));
-            if (parsed.isAfter(parseTime(endTime))) {
-              setEndTime("");
-            }
-          }}
+          onBlur={setTime(setStartTime)}
           onKeyDown={e => {
             if ([KEY_ENTER, KEY_TAB].includes(e.keyCode)) {
-              const parsed = parseTime(e.target.value);
-              setStartTime(
-                formatTime((parsed.isValid() && parsed) || moment())
-              );
-              if (parsed.isAfter(parseTime(endTime))) {
-                setEndTime("");
-              }
+              setTime(setStartTime)(e);
             }
           }}
           value={startTime}
         />
-        <StartDate>{date ? date.format("MM/DD") : "Today"}</StartDate>
+        <StartDate>
+          {startDate.isSame(moment(), "day")
+            ? "Today"
+            : startDate.format("MM/DD")}
+        </StartDate>
         {focused && (
           <DayPickerSingleDateController
-            date={date}
+            date={startDate}
             focused={true}
             onOutsideClick={e => {
               if (!startTimeRef.current.contains(e.target)) {
                 setFocused(false);
               }
             }}
-            onDateChange={date => {
-              setDate(date);
+            onDateChange={startDate => {
+              setStartDate(startDate);
             }}
           />
         )}
@@ -161,26 +173,40 @@ const TimeDatePicker = () => {
       </ArrowContainer>
       <EndTime
         onChange={e => setEndTime(e.target.value)}
-        onBlur={e => {
-          const parsed = parseTime(e.target.value);
-          setEndTime(formatTime((parsed.isValid() && parsed) || moment()));
-          if (parsed.isBefore(parseTime(startTime))) {
-            setStartTime("");
-          }
-        }}
+        onBlur={setTime(setEndTime)}
         onKeyDown={e => {
           if ([KEY_ENTER, KEY_TAB].includes(e.keyCode)) {
-            const parsed = parseTime(e.target.value);
-            setEndTime(formatTime((parsed.isValid() && parsed) || moment()));
-            if (parsed.isBefore(parseTime(startTime))) {
-              setStartTime("");
-            }
+            setTime(setEndTime)(e);
           }
         }}
         value={endTime}
       />
       <Button>
-        <FontAwesomeIcon icon={faCheckCircle} />
+        <FontAwesomeIcon
+          icon={faCheckCircle}
+          onClick={e => {
+            e.preventDefault();
+
+            const startTimeMoment = parseTime(startTime);
+            const endTimeMoment = parseTime(endTime);
+
+            const start = copyTime(startDate, startTimeMoment);
+            const end = copyTime(startDate, endTimeMoment);
+
+            // add extra day if start time is after end time (i.e. worked past midnight into next day)
+            if (startTimeMoment.isAfter(endTimeMoment)) {
+              end.add(1, "d");
+            }
+
+            console.log(start.toDate());
+            console.log(end.toDate());
+
+            onTimesChange({
+              start,
+              end
+            });
+          }}
+        />
       </Button>
     </Container>
   );

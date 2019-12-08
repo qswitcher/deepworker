@@ -1,10 +1,12 @@
 const { gql } = require("apollo-server");
 
 module.exports = gql`
+  scalar Date
+
   type Session {
     _id: ID!
-    start: String!
-    end: String!
+    start: Date!
+    end: Date!
     project: String!
     activity: String
     notes: String
@@ -12,8 +14,8 @@ module.exports = gql`
 
   input SessionInput {
     _id: ID
-    start: String!
-    end: String!
+    start: Date!
+    end: Date!
     project: String!
     activity: String
     notes: String

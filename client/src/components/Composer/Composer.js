@@ -1,75 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
-import { faStopCircle } from "@fortawesome/free-solid-svg-icons";
-import TotalTime from "../TotalTime/TotalTime";
+import { useMutation } from "@apollo/react-hooks";
 import TimeDatePicker from "../TimeDatePicker/TimeDatePicker";
-
-// `;
-// height: 100%;
-// border: none;
-// &:focus {
-//   outline: none;
-// }
-const Button = styled.button`
-  padding: 0;
-  border-radius: 21px;
-  border-color: transparent;
-  border-width: 3px;
-  border-style: solid;
-
-  &:focus {
-    border-color: rgba(177, 177, 177, 0.27);
-    outline: none;
-  }
-  svg {
-    font-size: 36px;
-  }
-  path {
-    fill: ${props => (props.isActive ? "#e20505" : "rgb(75, 200, 0)")};
-  }
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
-const TimerWrapper = styled(Row)`
-  padding-right: 12px;
-`;
-
-const Timer = () => {
-  const [seconds, setSeconds] = useState(0);
-  const [date, setDate] = useState(null);
-  const [datepickerFocus, setDatePickerFocus] = useState(false);
-  const [isActive, setIsActive] = useState(false);
-
-  useEffect(() => {
-    let interval = null;
-    if (isActive) {
-      interval = setInterval(() => {
-        setSeconds(seconds => seconds + 1);
-      }, 1000);
-    } else if (!isActive && seconds !== 0) {
-      clearInterval(interval);
-    }
-    return () => clearInterval(interval);
-  }, [isActive, seconds]);
-
-  return (
-    <TimerWrapper>
-      <TotalTime seconds={seconds} />
-      <Row>
-        <Button isActive={isActive} onClick={() => setIsActive(!isActive)}>
-          <FontAwesomeIcon icon={(isActive && faStopCircle) || faPlayCircle} />
-        </Button>
-      </Row>
-    </TimerWrapper>
-  );
-};
+import gql from "graphql-tag";
 
 const Input = styled.input`
   height: 66px;
@@ -89,12 +22,43 @@ const Wrapper = styled.div`
   box-shadow: rgba(0, 0, 0, 0.13) 0px 2px 6px 0px;
 `;
 
+const KEY_ENTER = 13;
+
+const ADD_SESSION = gql`
+  mutation addSession($session: SessionInput) {
+    addSession(session: $session) {
+      _id
+      project
+      start
+      end
+    }
+  }
+`;
+
 const Composer = () => {
+  const [project, setProject] = useState("");
+  const [times, setTimes] = useState({});
+  const [addSession] = useMutation(ADD_SESSION);
   return (
     <Wrapper>
-      <Input placeholder="What are you working on?" />
-      <TimeDatePicker />
-      {/* <Timer /> */}
+      <Input
+        value={project}
+        onKeyDown={e => {
+          if (KEY_ENTER === e.keyCode && times.start && times.end && project) {
+            addSession({
+              variables: {
+                session: {
+                  project,
+                  ...times
+                }
+              }
+            });
+          }
+        }}
+        onChange={e => setProject(e.target.value)}
+        placeholder="What are you working on?"
+      />
+      <TimeDatePicker onTimesChange={setTimes} />
     </Wrapper>
   );
 };

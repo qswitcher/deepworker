@@ -3,7 +3,6 @@ const mutations = require("./mutations");
 const typeDefs = require("./typeDefs");
 
 module.exports = {
-  resolvers,
-  mutations,
+  resolvers: { ...resolvers, ...mutations },
   typeDefs
 };
