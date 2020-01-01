@@ -2,10 +2,12 @@ import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import styled from "styled-components";
+import { useMutation } from "@apollo/react-hooks";
 
 const RECENT_SESSIONS = gql`
   {
     sessions {
+      _id
       start
       end
       project
@@ -83,8 +85,17 @@ const hourDiff = (a, b) => {
   return `${hours}:${minutes}:${seconds}`;
 };
 
+const DELETE_SESSION = gql`
+  mutation removeSession($session: DeleteInput) {
+    removeSession(session: $session) {
+      _id
+    }
+  }
+`;
+
 const ActivityFeed = () => {
   const { loading, error, data } = useQuery(RECENT_SESSIONS);
+  const [deleteSession] = useMutation(DELETE_SESSION);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error :(</div>;
@@ -119,6 +130,17 @@ const ActivityFeed = () => {
                     session.end
                   )}`}</FlexItem>
                   <FlexItem>{hourDiff(session.end, session.start)}</FlexItem>
+                  <FlexItem
+                    onClick={() => {
+                      deleteSession({
+                        variables: {
+                          session: {_id: session._id}
+                        }
+                      });
+                    }}
+                  >
+                    X
+                  </FlexItem>
                 </Session>
               );
             })}

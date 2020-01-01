@@ -198,9 +198,6 @@ const TimeDatePicker = ({ onTimesChange }) => {
               end.add(1, "d");
             }
 
-            console.log(start.toDate());
-            console.log(end.toDate());
-
             onTimesChange({
               start,
               end

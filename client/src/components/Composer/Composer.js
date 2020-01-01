@@ -39,26 +39,38 @@ const Composer = () => {
   const [project, setProject] = useState("");
   const [times, setTimes] = useState({});
   const [addSession] = useMutation(ADD_SESSION);
+
+  const submit = ({ project: p, times: t }) => {
+    addSession({
+      variables: {
+        session: {
+          project: p,
+          ...t
+        }
+      }
+    });
+  };
+
   return (
     <Wrapper>
       <Input
         value={project}
         onKeyDown={e => {
           if (KEY_ENTER === e.keyCode && times.start && times.end && project) {
-            addSession({
-              variables: {
-                session: {
-                  project,
-                  ...times
-                }
-              }
-            });
+            submit({ project, times });
           }
         }}
         onChange={e => setProject(e.target.value)}
         placeholder="What are you working on?"
       />
-      <TimeDatePicker onTimesChange={setTimes} />
+      <TimeDatePicker
+        onTimesChange={times => {
+          setTimes(times);
+          if (project) {
+            submit({ project, times });
+          }
+        }}
+      />
     </Wrapper>
   );
 };
