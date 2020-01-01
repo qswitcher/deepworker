@@ -11,6 +11,18 @@ const sessionsMutations = {
       } catch (e) {
         console.log(e);
       }
+    },
+
+    async removeSession(_, { session: {_id} }) {
+      try {
+        const session = await Sessions.deleteOne({
+          _id
+        });
+        console.log(`deleted ${_id}`)
+        return session;
+      } catch (e) {
+        console.log("e", e);
+      }
     }
   }
 };

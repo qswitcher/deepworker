@@ -21,8 +21,13 @@ module.exports = gql`
     notes: String
   }
 
+  input DeleteInput {
+    _id: ID
+  }
+
   type Mutation {
     addSession(session: SessionInput): Session
+    removeSession(session: DeleteInput): Session
   }
 
   type Query {
